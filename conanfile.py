@@ -1,0 +1,67 @@
+from conans import ConanFile, CMake, tools
+from six import StringIO  # Python 2 and 3 compatible
+import os
+
+class OpenLDAPConan(ConanFile):
+    name = "openldap"
+    version = "2.4.46"
+    author = "Ralph-Gordon Paul (gordon@rgpaul.com)"
+    settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False], "android_ndk": "ANY", "android_stl_type":["c++_static", "c++_shared"]}
+    default_options = "shared=False", "android_ndk=None", "android_stl_type=c++_static"
+    description = "OpenLDAP Software is an open source implementation of the Lightweight Directory Access Protocol."
+    url = "https://github.com/Manromen/conan-openldap-scripts"
+    license = "OLDAP-2.8"
+    exports_sources = "cmake-modules/*", "patches-ios/*"
+
+    # download sources
+    def source(self):
+        url = "ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release/%s" % self.version
+        tools.get(url)
+
+    # compile using cmake
+    def build(self):
+        library_folder = "%s/openldap-%s" % (self.source_folder, self.version)
+
+        if self.settings.os == "iOS":
+            if self.version == "2.4.46":
+                self.run("cd %s; patch -p1 < %s/patches-ios/2.4.46.patch" % (library_folder, self.build_folder))
+
+        #mybuf = StringIO()
+        #self.run("mycommand", output=mybuf)
+        #self.output.warn(mybuf.getvalue())
+
+        #export CPPFLAGS="-arch ${target} -isysroot $PLATFORMPATH/$platform.platform/Developer/SDKs/$platform$IOS_SDK_VERSION.sdk -miphoneos-version-min=$IOS_MIN_VERSION"
+        #export LDFLAGS="-arch ${target} -isysroot $PLATFORMPATH/$platform.platform/Developer/SDKs/$platform$IOS_SDK_VERSION.sdk"
+
+        autotools = AutoToolsBuildEnvironment(self)
+        autotools.configure(args=["-disable-shared", "--host=i386-apple-darwin", "--disable-debug", "--with-yielding_select=no", "--with-tls=auto", "--disable-slapd"])
+        autotools.make()
+
+    def package(self):
+        self.copy("*", dst="include", src='include')
+        self.copy("*.lib", dst="lib", src='lib', keep_path=False)
+        self.copy("*.dll", dst="bin", src='bin', keep_path=False)
+        self.copy("*.so", dst="lib", src='lib', keep_path=False)
+        self.copy("*.dylib", dst="lib", src='lib', keep_path=False)
+        self.copy("*.a", dst="lib", src='lib', keep_path=False)
+        
+    def package_info(self):
+        self.cpp_info.libs = tools.collect_libs(self)
+        self.cpp_info.includedirs = ['include']
+
+    def package_id(self):
+        if "arm" in self.settings.arch and self.settings.os == "iOS":
+            self.info.settings.arch = "AnyARM"
+
+    def requirements(self):
+        self.requires("libressl/2.9.2@%s/%s" % (self.user, self.channel))
+
+        if self.options.shared:
+            raise Exception("Shared library is not supported yet")
+
+    def config_options(self):
+        # remove android specific option for all other platforms
+        if self.settings.os != "Android":
+            del self.options.android_ndk
+            del self.options.android_stl_type
