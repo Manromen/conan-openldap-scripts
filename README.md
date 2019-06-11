@@ -1,4 +1,5 @@
 # Conan OpenLDAP
+[![Build Status](https://travis-ci.com/Manromen/conan-openldap-scripts.svg?branch=master)](https://travis-ci.com/Manromen/conan-openldap-scripts)
 This repository contains the conan receipe that is used to build the OpenLDAP packages at [rgpaul bintray](https://bintray.com/manromen/rgpaul).
 
 For Infos about the OpenLDAP library please visit [openldap.org](https://www.openldap.org/).
