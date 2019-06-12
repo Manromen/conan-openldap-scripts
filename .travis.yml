@@ -106,22 +106,22 @@ matrix:
         - TARGET_BUILD_TYPE=Release
 
       # iOS - Debug
-    - os: osx
-      osx_image: xcode10.2
-      compiler: clang
-      env:
-        - TARGET_PLATFORM=ios
-        - TARGET_ARCH=armv8
-        - TARGET_BUILD_TYPE=Debug
+#    - os: osx
+#      osx_image: xcode10.2
+#      compiler: clang
+#      env:
+#        - TARGET_PLATFORM=ios
+#        - TARGET_ARCH=armv8
+#        - TARGET_BUILD_TYPE=Debug
 
     # iOS - Simulator
-    - os: osx
-      osx_image: xcode10.2
-      compiler: clang
-      env:
-        - TARGET_PLATFORM=ios
-        - TARGET_ARCH=x86_64
-        - TARGET_BUILD_TYPE=Debug
+#    - os: osx
+#      osx_image: xcode10.2
+#      compiler: clang
+#      env:
+#        - TARGET_PLATFORM=ios
+#        - TARGET_ARCH=x86_64
+#        - TARGET_BUILD_TYPE=Debug
 
     # macOS - Release
 #    - os: osx
