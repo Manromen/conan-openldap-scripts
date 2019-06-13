@@ -32,11 +32,9 @@ class OpenLDAPConan(ConanFile):
 
             # define all architectures for ios fat library
             if "arm" in self.settings.arch:
-                self.run("%s/openldap-ios.sh %s arm %s %s" % (self.build_folder, self.version, library_folder, 
-                    self.settings.build_type))
+                self.run("%s/openldap-ios.sh %s arm %s %s" % (self.build_folder, self.version, library_folder, self.settings.build_type))
             else:
-                self.run("%s/openldap-ios.sh %s %s %s %s" % (self.build_folder, self.version, 
-                    tools.to_apple_arch(self.settings.arch), library_folder, self.settings.build_type))
+                self.run("%s/openldap-ios.sh %s %s %s %s" % (self.build_folder, self.version, tools.to_apple_arch(self.settings.arch), library_folder, self.settings.build_type))
 
     def create_ios_fat_files(self):
         # LIPO command
