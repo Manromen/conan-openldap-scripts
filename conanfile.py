@@ -36,28 +36,13 @@ class OpenLDAPConan(ConanFile):
             else:
                 self.run("%s/openldap-ios.sh %s %s %s %s" % (self.build_folder, self.version, tools.to_apple_arch(self.settings.arch), library_folder, self.settings.build_type))
 
-    def create_ios_fat_files(self):
-        # LIPO command
-        cmd_output = StringIO()
-        self.run("xcrun -sdk iphoneos -find lipo", output=cmd_output)
-        lipo_cmd = cmd_output.getvalue().rstrip()
-        cmd_output.close()
-
-        lib_dir = os.path.join(self.build_folder,"output","armv8","lib")
-        for f in os.listdir(lib_dir):
-            lipo = lipo_cmd + " -create "
-            if f.endswith(".a"):
-                for arch in self.variants:
-                    lipo += os.path.join(self.build_folder,"output",arch,"lib", f, " ")
-                lipo += "-output " + os.path.join(self.package_folder, "lib", f)
-                self.run(lipo)
-
     def package(self):
-        self.copy("*", dst="include", src='include')
+        self.copy("*.h", dst="include", src='include')
+        self.copy("*.hpp", dst="include", src='include')
         self.copy("*.lib", dst="lib", src='lib', keep_path=False)
         self.copy("*.dll", dst="bin", src='bin', keep_path=False)
         self.copy("*.so", dst="lib", src='lib', keep_path=False)
-        self.copy("*.dylib", dst="lib", src='lib', keep_path=False)
+        self.copy("*.dylib*", dst="lib", src='lib', keep_path=False)
         self.copy("*.a", dst="lib", src='lib', keep_path=False)
         
     def package_info(self):
