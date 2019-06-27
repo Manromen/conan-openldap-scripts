@@ -25,7 +25,7 @@ env:
 ### before installing deps
 before_install:
   # Download Android NDK from Google
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$TARGET_PLATFORM" == "android" ]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && "$CI_TARGET_PLATFORM" == "android" ]]; then
       curl -sSOL "https://dl.google.com/android/repository/android-ndk-${TRAVIS_ANDROID_NDK_VERSION}-linux-x86_64.zip";
       unzip -q -o android-ndk-${TRAVIS_ANDROID_NDK_VERSION}-linux-x86_64.zip;
     fi
@@ -57,18 +57,18 @@ script:
   - if [[ "${COMPILER}" != "" ]]; then export CXX=${COMPILER}; fi
 
   # macOS Builds
-  - if [ "$TARGET_PLATFORM" == "macos" ]; then
+  - if [ "$CI_TARGET_PLATFORM" == "macos" ]; then
       export MACOS_SDK_VERSION=$(xcodebuild -showsdks | grep macosx | awk '{print $4}' | sed 's/[^0-9,\.]*//g');
       echo "macOS SDK ${MACOS_SDK_VERSION}";
-      conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=Macos -s os.version=${MACOS_SDK_VERSION} -s arch=${TARGET_ARCH} -s build_type=${TARGET_BUILD_TYPE} -o shared=False;
+      conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=Macos -s os.version=${MACOS_SDK_VERSION} -s arch=${CI_TARGET_ARCH} -s build_type=${CI_TARGET_BUILD_TYPE} -o shared=False;
     fi
 
   # iOS Builds
-  - if [ "$TARGET_PLATFORM" == "ios" ]; then
+  - if [ "$CI_TARGET_PLATFORM" == "ios" ]; then
       export IOS_SDK_VERSION=$(xcodebuild -showsdks | grep iphoneos | awk '{print $4}' | sed 's/[^0-9,\.]*//g');
       echo "iOS SDK ${IOS_SDK_VERSION}";
       
-      conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=iOS -s os.version=${IOS_SDK_VERSION} -s arch=${TARGET_ARCH} -s build_type=${TARGET_BUILD_TYPE} -o shared=False;
+      conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=iOS -s os.version=${IOS_SDK_VERSION} -s arch=${CI_TARGET_ARCH} -s build_type=${CI_TARGET_BUILD_TYPE} -o shared=False;
     fi
 
 deploy:
@@ -87,42 +87,42 @@ matrix:
       osx_image: xcode10.2
       compiler: clang
       env:
-        - TARGET_PLATFORM=ios
-        - TARGET_ARCH=armv8
-        - TARGET_BUILD_TYPE=Release
+        - CI_TARGET_PLATFORM=ios
+        - CI_TARGET_ARCH=armv8
+        - CI_TARGET_BUILD_TYPE=Release
 
       # iOS - Debug
 #    - os: osx
 #      osx_image: xcode10.2
 #      compiler: clang
 #      env:
-#        - TARGET_PLATFORM=ios
-#        - TARGET_ARCH=armv8
-#        - TARGET_BUILD_TYPE=Debug
+#        - CI_TARGET_PLATFORM=ios
+#        - CI_TARGET_ARCH=armv8
+#        - CI_TARGET_BUILD_TYPE=Debug
 
     # iOS - Simulator
 #    - os: osx
 #      osx_image: xcode10.2
 #      compiler: clang
 #      env:
-#        - TARGET_PLATFORM=ios
-#        - TARGET_ARCH=x86_64
-#        - TARGET_BUILD_TYPE=Debug
+#        - CI_TARGET_PLATFORM=ios
+#        - CI_TARGET_ARCH=x86_64
+#        - CI_TARGET_BUILD_TYPE=Debug
 
     # macOS - Release
 #    - os: osx
 #      osx_image: xcode10.2
 #      compiler: clang
 #      env:
-#        - TARGET_PLATFORM=macos
-#        - TARGET_ARCH=x86_64
-#        - TARGET_BUILD_TYPE=Release
+#        - CI_TARGET_PLATFORM=macos
+#        - CI_TARGET_ARCH=x86_64
+#        - CI_TARGET_BUILD_TYPE=Release
 
     # macOS - Debug
 #    - os: osx
 #      osx_image: xcode10.2
 #      compiler: clang
 #      env:
-#        - TARGET_PLATFORM=macos
-#        - TARGET_ARCH=x86_64
-#        - TARGET_BUILD_TYPE=Debug
+#        - CI_TARGET_PLATFORM=macos
+#        - CI_TARGET_ARCH=x86_64
+#        - CI_TARGET_BUILD_TYPE=Debug
