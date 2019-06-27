@@ -68,7 +68,7 @@ script:
       export IOS_SDK_VERSION=$(xcodebuild -showsdks | grep iphoneos | awk '{print $4}' | sed 's/[^0-9,\.]*//g');
       echo "iOS SDK ${IOS_SDK_VERSION}";
       
-      conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=iOS -s os.version=${IOS_SDK_VERSION} -s arch=${CI_TARGET_ARCH} -s build_type=${CI_TARGET_BUILD_TYPE} -o shared=False;
+      travis_wait 60 conan create . openldap/${LIBRARY_VERSION}@${CONAN_USER}/${CONAN_CHANNEL} -s os=iOS -s os.version=${IOS_SDK_VERSION} -s arch=${CI_TARGET_ARCH} -s build_type=${CI_TARGET_BUILD_TYPE} -o shared=False;
     fi
 
 deploy:

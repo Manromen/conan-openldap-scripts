@@ -34,7 +34,7 @@ declare DEVICE_ARCH=$2
 declare LIBRARY_FOLDER=$3
 declare BUILD_TYPE=$4
 
-declare IOS_MIN_VERSION=10
+declare IOS_MIN_VERSION="10.0"
 
 # ----------------------------------------------------------------------------------------------------------------------
 # globals
@@ -104,9 +104,9 @@ function build()
                     --exec-prefix="${ABSOLUTE_DIR}/install/$target"
     fi
 
-    make depend
+    make depend > log.txt
     # make clean
-    make
+    make >> log.txt
     make install
 
     echo "============================================================="
